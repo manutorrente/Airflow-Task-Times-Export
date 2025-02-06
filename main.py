@@ -75,6 +75,17 @@ def dag_history_to_csv(dag_run_api_instance: dag_run_api.DAGRunApi, task_instanc
     datefields = [field for field in fields if 'date' in field.lower()]
     map_task_instances_to_csv(task_instances, filename, fields, datefields)
 
+def last_dag_run_to_csv(dag_run_api_instance: dag_run_api.DAGRunApi, task_instance_api_instance: task_instance_api.TaskInstanceApi, dag_id: str, fields: list[str]) -> None:
+    last_dag_run = get_last_dag_run(dag_run_api_instance, dag_id)
+    dag_run_id = last_dag_run['dag_run_id']
+    task_instances = get_task_instances(task_instance_api_instance, dag_id, dag_run_id)
+
+    print(f"Writing last dag run to {dag_id}-last-dag-run.csv")
+    print(f"Task Instances: {len(task_instances)}")
+
+    filename = f"output/{dag_id}-last-dag-run.csv".replace(":", "-")
+    datefields = [field for field in fields if 'date' in field.lower()]
+    map_task_instances_to_csv(task_instances, filename, fields, datefields)
 
 def main():
     
